@@ -48,7 +48,6 @@ export default {
         :class="{ active: index === activeIndex }"
         @click="updateActiveIndex(index)"
       >
-      
         <img src="" class="card-img-top" alt="..." />
         <div class="card-body"> 
           <h5>{{ contact.name }}</h5>
