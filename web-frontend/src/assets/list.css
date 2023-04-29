@@ -1,0 +1,14 @@
+.row {
+    position: relative;
+}
+.card{
+    border-radius: 2rem;
+    max-width: 150px;
+    margin: 10px;
+}
+.link{
+    max-width: 150px;
+    margin: auto;
+    margin-bottom: 0.5rem;
+
+}

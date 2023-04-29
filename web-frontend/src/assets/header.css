@@ -1,0 +1,17 @@
+.navbar container-fluid{
+    background-color: aquamarine;
+    border: cadetblue;
+    border-radius: 10px;
+    color: aqua;
+}
+
+.nav-item{
+    border: black;
+    background-color: rgb(242, 248, 248);
+    border-radius: 10px;
+    margin-right: 2px;
+}
+.navbar{
+    max-width: 1900px;
+
+}

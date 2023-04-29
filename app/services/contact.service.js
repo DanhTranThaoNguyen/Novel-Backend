@@ -1,52 +1,52 @@
-const {ObjectId} = require('mongodb');
+const { ObjectId } = require("mongodb");
 
-class ContactService {
-    constructor (client) {
-        this.Contact = client.db().collection("contacts");
-    }
-    // Định nghĩa các phương thức truy suất CSDL sử dụng mongodb API
-    extractConactData(payload) {
-        const contact = {
-        name: payload.name,
-        email: payload.email,
-        address: payload.address,
-        phone: payload.phone,
-        favorite: payload.favorite,
-        };
-        
-        
-        // Remove undefined fields
-        Object.keys(contact).forEach(key => contact[key] === undefined && delete contact[key])
+class ContactService { // class truyen
+  constructor(client) {
+    this.Contact = client.db().collection("contacts");
+  }
+  // Định nghĩa các phương thức truy suất CSDL sử dụng mongodb API
+  extractConactData(payload) {
+    const contact = {
+      name: payload.name,   // ten truyen
+      category: payload.category, // the loai
+      author: payload.author,   // tac gia
+      describe: payload.describe, // mo ta
+      country: payload.country,
+      favorite: payload.favorite,
+      chaper: payload.chaper,
+      contents: payload.contents,
+      img: payload.img,
+    };
+    // Remove undefined fields
+    Object.keys(contact).forEach(
+      (key) => contact[key] === undefined && delete contact[key]
+    );
+    return contact;  
+  }
 
-        // console.log('test extract')
-        return contact;
-    }
+  async create(payload) {
+    const contact = this.extractConactData(payload);
+    const result = await this.Contact.findOneAndUpdate(
+      contact,
+      { $set: { favorite: contact.favorite === true } },
+      { returnDocument: "after", upsert: true }
+    );
+    return result.value;
+  }
+  async find(filter) {
+    const cursor = await this.Contact.find(filter);
+    return await cursor.toArray();
+  }
 
-     async create(payload) {
-         const contact = this.extractConactData(payload);
-         console.log('kkkfdsf')
-        
-        const result = await this.Contact.findOneAndUpdate(
-        contact,
-        { $set: { favorite: contact.favorite === true } },
-        { returnDocument: "after", upsert: true }
-        );
-        return result.value;
-    }
-    async find (filter) {
-        const cursor = await this.Contact.find(filter)
-        return await cursor.toArray()
-    }
+  async findByName(name) {
+    return await this.find({
+      name: {
+        $regex: RegExp(name),
+        $options: "i", // case insensitive
+      },
+    });
+  }
 
-    async findByName (name) {
-        return await this.find({
-            name: {
-                $regex: RegExp(name),
-                $options: 'i', // case insensitive
-            }
-        })
-    }
-    
   async findById(id) {
     return await this.Contact.findOne({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
@@ -57,11 +57,11 @@ class ContactService {
     const filter = {
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     };
-    const update = this.extractConactData(payload)
+    const update = this.extractConactData(payload);
     const result = await this.Contact.findOneAndUpdate(
       filter,
       { $set: update },
-      { returnDocument: 'after' }
+      { returnDocument: "after" }
     );
     return result.value;
   }
@@ -81,6 +81,5 @@ class ContactService {
     const result = await this.Contact.deleteMany({});
     return result.deletedCount;
   }
-}
-
- module.exports = ContactService;
+};
+module.exports = ContactService;
